@@ -19,7 +19,7 @@ public class ReportPortalController {
         return reportPortalService.saveData(reportPortalModel);
     }
 
-    @PostMapping("/ftr-sv1/deleteById")
+    @DeleteMapping("/ftr-sv1/deleteById")
     public String delete(@RequestParam Long id) {
         return reportPortalService.deleteData(id);
     }

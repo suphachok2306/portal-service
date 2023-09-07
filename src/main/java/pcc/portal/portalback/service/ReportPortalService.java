@@ -78,8 +78,10 @@ public class ReportPortalService {
         return reportPortalModelList;
     }
 
+
     public String covertBase64() {
         List<ReportPortalModel> result = getReportPortalModel();
+
         try {
             JRBeanCollectionDataSource JRBdataset = new JRBeanCollectionDataSource(result);
             HashMap<String, Object> params = new HashMap<>();
