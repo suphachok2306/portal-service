@@ -28,7 +28,7 @@ public class PortalController {
         return portalService.editData(portalModel);
     }
 
-    @PostMapping("/ftr-of1/deleteById")
+    @DeleteMapping("/ftr-of1/deleteById")
     public String delete(@RequestParam Long id){
         return portalService.deleteData(id);
     }
@@ -39,10 +39,21 @@ public class PortalController {
     }
 
 
+//    @GetMapping("/ftr-oj1/search")
+//    public List<PortalModel> search(@RequestParam String empName,String empRole,String department) {
+//        return portalService.search(empName, empRole, department);
+//    }
+
     @GetMapping("/ftr-oj1/search")
-    public List<PortalModel> search(@RequestParam String empName,String empRole,String department) {
+    public List<PortalModel> search(
+            @RequestParam(required = false) String empName,
+            @RequestParam(required = false) String empRole,
+            @RequestParam(required = false) String department
+    ) {
         return portalService.search(empName, empRole, department);
     }
+
+
 
 
 

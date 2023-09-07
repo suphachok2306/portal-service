@@ -90,19 +90,62 @@ public class PortalService {
     }
 
 
+//    public List<PortalModel> search(String name, String role, String department) {
+//        List<PortalEntity> entity = portalJpaRepository.findByNameAndRoleAndDepartment(name, role, department);
+////        List<PortalModel> result = new ArrayList<>();
+////
+////        for(PortalEntity portalEntity : entity) {
+////            PortalModel porModel = modelMapper.map(portalEntity, PortalModel.class);
+////            result.add(porModel);
+////        }
+////        return result;
+//        return entity.stream()
+//                .map(portalEntity -> modelMapper.map(portalEntity, PortalModel.class))
+//                .collect(Collectors.toList());
+//    }
+
     public List<PortalModel> search(String name, String role, String department) {
-        List<PortalEntity> entity = portalJpaRepository.findByNameAndRoleAndDepartment(name, role, department);
-//        List<PortalModel> result = new ArrayList<>();
-//
-//        for(PortalEntity portalEntity : entity) {
-//            PortalModel porModel = modelMapper.map(portalEntity, PortalModel.class);
-//            result.add(porModel);
-//        }
-//        return result;
-        return entity.stream()
+        List<PortalEntity> entityList;
+
+        if (name != null && !name.isEmpty()) {
+            if (role != null && !role.isEmpty()) {
+                if (department != null && !department.isEmpty()) {
+                    // ค้นหาตามชื่อ, บทบาท, และแผนก
+                    entityList = portalJpaRepository.findByEmpNameAndEmpRoleAndDept(name, role, department);
+                } else {
+                    // ค้นหาตามชื่อและบทบาท
+                    entityList = portalJpaRepository.findByEmpNameAndEmpRole(name, role);
+                }
+            } else if (department != null && !department.isEmpty()) {
+                // ค้นหาตามชื่อและแผนก
+                entityList = portalJpaRepository.findByEmpNameAndDept(name, department);
+            } else {
+                // ค้นหาตามชื่อเท่านั้น
+                entityList = portalJpaRepository.findByEmpName(name);
+            }
+        } else if (role != null && !role.isEmpty()) {
+            if (department != null && !department.isEmpty()) {
+                // ค้นหาตามบทบาทและแผนก
+                entityList = portalJpaRepository.findByEmpRoleAndDept(role, department);
+            } else {
+                // ค้นหาตามบทบาทเท่านั้น
+                entityList = portalJpaRepository.findByEmpRole(role);
+            }
+        } else if (department != null && !department.isEmpty()) {
+            // ค้นหาตามแผนก
+            entityList = portalJpaRepository.findByDept(department);
+        } else {
+            // ถ้าไม่ระบุเงื่อนไขใดๆ ให้คืนรายการทั้งหมด
+            entityList = portalJpaRepository.findAll();
+        }
+
+        return entityList.stream()
                 .map(portalEntity -> modelMapper.map(portalEntity, PortalModel.class))
                 .collect(Collectors.toList());
     }
+
+
+
 
 }
 
