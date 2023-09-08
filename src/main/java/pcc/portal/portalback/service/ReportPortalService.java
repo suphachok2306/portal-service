@@ -85,7 +85,6 @@ public class ReportPortalService {
     public List<ReportPortalModel> getReportPortalModel() {
         List<ReportPortalEntity> reportPortalEntityList = reportPortalJpaRepository.findAll();
         List<ReportPortalModel> reportPortalModelList = new ArrayList<>();
-        reportPortalModelList.add(null);
         for (ReportPortalEntity reportPortalEntity : reportPortalEntityList) {
             ReportPortalModel reportPortalModel = modelMapper.map(reportPortalEntity, ReportPortalModel.class);
             reportPortalModelList.add(reportPortalModel);
@@ -96,7 +95,6 @@ public class ReportPortalService {
 
     public String covertBase64() {
         List<ReportPortalModel> result = getReportPortalModel();
-
         try {
             JRBeanCollectionDataSource JRBdataset = new JRBeanCollectionDataSource(result);
             HashMap<String, Object> params = new HashMap<>();

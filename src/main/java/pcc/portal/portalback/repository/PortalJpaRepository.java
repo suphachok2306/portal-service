@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import pcc.portal.portalback.entity.PortalEntity;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -31,5 +32,6 @@ public interface PortalJpaRepository extends JpaRepository<PortalEntity, Long> {
     List<PortalEntity> findByEmpRoleAndDept(String empRole, String dept);
 
     List<PortalEntity> findByEmpNameAndEmpRoleAndDept(String empName, String empRole, String dept);
+
 }
 

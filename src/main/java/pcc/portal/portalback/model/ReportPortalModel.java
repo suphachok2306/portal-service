@@ -2,6 +2,7 @@ package pcc.portal.portalback.model;
 
 public class ReportPortalModel {
     private long sv1_id;
+    private int index;
     private String year;
     private String department;
     private String position;
@@ -14,6 +15,9 @@ public class ReportPortalModel {
 
     public long getSv1_id() {return sv1_id;}
     public void setSv1_id(long sv1_id) {this.sv1_id = sv1_id;}
+
+    public int getIndex() {return index;}
+    public void setIndex(int index) {this.index = index;}
 
     public String getYear() {return year;}
     public void setYear(String year) {this.year = year;}
