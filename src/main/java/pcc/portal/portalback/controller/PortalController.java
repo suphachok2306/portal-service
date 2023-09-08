@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import pcc.portal.portalback.model.PortalModel;
 import pcc.portal.portalback.service.PortalService;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -24,12 +25,12 @@ public class PortalController {
         return portalService.saveData(portalModel);
     }
 
-    @PostMapping("/ftr-of1/edit")
+    @PostMapping("/ftr-oj1/edit")
     public String edit(@RequestBody PortalModel portalModel) throws ParseException {
         return portalService.editData(portalModel);
     }
 
-    @DeleteMapping("/ftr-of1/deleteById")
+    @DeleteMapping("/ftr-oj1/deleteById")
     public String delete(@RequestParam Long id){
         return portalService.deleteData(id);
     }
@@ -38,8 +39,8 @@ public class PortalController {
     public Object search() {
         return portalService.findAll();
     }
-    
-    @GetMapping("/ftr-of1/findById")
+
+    @GetMapping("/ftr-oj1/findById")
     public PortalModel findById(@RequestParam long of1_id) {
         return portalService.findById(of1_id);
     }
@@ -50,27 +51,27 @@ public class PortalController {
 //        return portalService.search(empName, empRole, department);
 //    }
 
-    @GetMapping("/ftr-oj1/search")
-    public List<PortalModel> search(
-            @RequestParam(required = false) String empName,
-            @RequestParam(required = false) String empRole,
-            @RequestParam(required = false) String department
-    ) {
-        return portalService.search(empName, empRole, department);
-    }
-
 //    @GetMapping("/ftr-oj1/search")
 //    public List<PortalModel> search(
 //            @RequestParam(required = false) String empName,
 //            @RequestParam(required = false) String empRole,
-//            @RequestParam(required = false) String department,
-//            @RequestParam(required = false) Date startDate,
-//            @RequestParam(required = false) Date endDate,
-//            @RequestParam(required = false) String topic
-//
+//            @RequestParam(required = false) String department
 //    ) {
-//        return portalService.search(empName, empRole, department,startDate,endDate,topic);
+//        return portalService.search(empName, empRole, department);
 //    }
+
+    @GetMapping("/ftr-oj1/search")
+    public List<PortalModel> search(
+            @RequestParam(required = false) String empName,
+            @RequestParam(required = false) String empRole,
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) Timestamp startDate,
+            @RequestParam(required = false) Timestamp endDate,
+            @RequestParam(required = false) String topic
+
+    ) {
+        return portalService.search(empName, empRole, department,startDate,endDate,topic);
+    }
 
 
 

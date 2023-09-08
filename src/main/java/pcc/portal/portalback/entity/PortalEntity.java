@@ -2,6 +2,7 @@ package pcc.portal.portalback.entity;
 //import jakarta.persistence.*;
 import javax.persistence.*;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 
@@ -12,11 +13,11 @@ public class PortalEntity {
     private long of1_id;
     private String deptCode;
     private String dept;
-    private Date date;
+    private Timestamp date;
     private String topic;
     private String objt;
-    private Date startDate;
-    private Date endDate;
+    private Timestamp startDate;
+    private Timestamp endDate;
     private int day;
     private float fee;
     private String company;
@@ -26,7 +27,7 @@ public class PortalEntity {
     private String empName;
     private String empRole;
     private String action;
-    private Date actionDate;
+    private Timestamp actionDate;
 
     private String evaluatorName;
     private String evaluatorRole;
@@ -48,10 +49,10 @@ public class PortalEntity {
         super();
     }
 
-    public PortalEntity(long of1_id, String deptCode, String dept, Date date, String topic, String objt,
-                        Date startDate, Date endDate, int day, float fee, String company, String location,
+    public PortalEntity(long of1_id, String deptCode, String dept, Timestamp date, String topic, String objt,
+                        Timestamp startDate, Timestamp endDate, int day, float fee, String company, String location,
                         String budget, String empCode, String empName, String empRole, String action,
-                        Date actionDate, String evaluatorName, String evaluatorRole, String evaluatorDept,
+                        Timestamp actionDate, String evaluatorName, String evaluatorRole, String evaluatorDept,
                         String evaluatorSector, String resultOne, String resultTwo, String resultThree,
                         String resultFour, String resultFive, String resultSix, String resultSeven,
                         String comment, String result, String cause, String plan) {
@@ -104,10 +105,10 @@ public class PortalEntity {
     public String getDept() {return dept;}
     public void setDept(String dept) {this.dept = dept;}
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date", length = 50)
-    public Date getDate() {return date;}
-    public void setDate(Date date) {this.date = date;}
+    public Timestamp getDate() {return date;}
+    public void setDate(Timestamp date) {this.date = date;}
 
     @Column(name = "topic", length = 50)
     public String getTopic() {return topic;}
@@ -117,15 +118,15 @@ public class PortalEntity {
     public String getObjt() {return objt;}
     public void setObjt(String objt) {this.objt = objt;}
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     @Column(name = "startDate", length = 50)
-    public Date getStartDate() {return startDate;}
-    public void setStartDate(Date startDate) {this.startDate = startDate;}
+    public Timestamp getStartDate() {return startDate;}
+    public void setStartDate(Timestamp startDate) {this.startDate = startDate;}
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     @Column(name = "endDate", length = 50)
-    public Date getEndDate() {return endDate;}
-    public void setEndDate(Date endDate) {this.endDate = endDate;}
+    public Timestamp getEndDate() {return endDate;}
+    public void setEndDate(Timestamp endDate) {this.endDate = endDate;}
 
     @Column(name = "day")
     public int getDay() {return day;}
@@ -164,10 +165,10 @@ public class PortalEntity {
     public String getAction() {return action;}
     public void setAction(String action) {this.action = action;}
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     @Column(name = "actionDate", length = 50)
-    public Date getActionDate() {return actionDate;}
-    public void setActionDate(Date actionDate) {this.actionDate = actionDate;}
+    public Timestamp getActionDate() {return actionDate;}
+    public void setActionDate(Timestamp actionDate) {this.actionDate = actionDate;}
 
     @Column(name = "evaluatorName", length = 50)
     public String getEvaluatorName() {return evaluatorName;}
