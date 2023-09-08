@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportPortalService {
@@ -65,6 +66,20 @@ public class ReportPortalService {
     public Object findAll() {
         return reportPortalJpaRepository.findAll();
     }
+
+    public List<ReportPortalModel> search(String year, String department) {
+        List<ReportPortalEntity> entityList;
+
+        if (year != null && !year.isEmpty() && department != null && !department.isEmpty()) {
+            entityList = reportPortalJpaRepository.findByYearAndDepartment(year, department);
+        } else {
+            entityList = reportPortalJpaRepository.findAll();
+        }
+        return entityList.stream()
+                .map(reportPortalEntity -> modelMapper.map(reportPortalEntity, ReportPortalModel.class))
+                .collect(Collectors.toList());
+    }
+
 
 
     public List<ReportPortalModel> getReportPortalModel() {

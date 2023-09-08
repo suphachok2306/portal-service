@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface ReportPortalJpaRepository extends JpaRepository<ReportPortalEntity, Long> {
-
+    List<ReportPortalEntity> findByYearAndDepartment(String year,String department);
 }
 

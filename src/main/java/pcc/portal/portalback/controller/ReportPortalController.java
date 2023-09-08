@@ -2,8 +2,11 @@ package pcc.portal.portalback.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pcc.portal.portalback.model.PortalModel;
 import pcc.portal.portalback.model.ReportPortalModel;
 import pcc.portal.portalback.service.ReportPortalService;
+
+import java.util.List;
 
 @RestController
 public class ReportPortalController {
@@ -32,6 +35,11 @@ public class ReportPortalController {
     @GetMapping("/ftr-sv1/findAll")
     public Object search() {
         return reportPortalService.findAll();
+    }
+
+    @GetMapping("/ftr-sv1/search")
+    public List<ReportPortalModel> search(@RequestParam String year, String department) {
+        return reportPortalService.search(year,department);
     }
 
     @GetMapping("/ftr-sv1/report")
