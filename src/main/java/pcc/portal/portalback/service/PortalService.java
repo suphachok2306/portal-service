@@ -1,5 +1,6 @@
 package pcc.portal.portalback.service;
 
+import org.hibernate.engine.spi.SessionImplementor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -7,10 +8,19 @@ import pcc.portal.portalback.entity.PortalEntity;
 import pcc.portal.portalback.model.PortalModel;
 import pcc.portal.portalback.repository.PortalJpaRepository;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,6 +28,9 @@ import java.util.stream.Collectors;
 public class PortalService {
     private final PortalJpaRepository portalJpaRepository;
     private final ModelMapper modelMapper;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
 //    @Autowired
 //    public PortalService(PortalJpaRepository portalJpaRepository, ModelMapper modelMapper) {
@@ -70,28 +83,6 @@ public class PortalService {
         return "SUCCESS";
     }
 
-//    public String editData(PortalModel portalModel) throws ParseException {
-//        Optional<PortalEntity> optionalPortalEntity = portalJpaRepository.findById(portalModel.getOf1_id());
-//
-//        //ใช้ตรวจสอบว่า NULL ก่อนส่งมารึป่าว
-//        if (optionalPortalEntity.isPresent()) {
-//            PortalEntity portalEntity = optionalPortalEntity.get();
-//
-//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-//            Date startDate = sdf.parse(portalModel.getStartDate());
-//            Date endDate = sdf.parse(portalModel.getEndDate());
-//
-//            int dateDifference = calculateDateDifference(startDate, endDate);
-//
-//            portalEntity = modelMapper.map(portalModel, PortalEntity.class);
-//            portalEntity.setDay(dateDifference);
-//            portalJpaRepository.save(portalEntity);
-//
-//            return "SUCCESS";
-//        } else {
-//            return "ERROR: Data not found";
-//        }
-//    }
 
     public String editData(PortalModel portalModel) throws ParseException {
         Optional<PortalEntity> optionalPortalEntity = portalJpaRepository.findById(portalModel.getOf1_id());
@@ -130,7 +121,6 @@ public class PortalService {
     }
 
 
-
     public List<PortalEntity> findAll() {
         return portalJpaRepository.findAll();
     }
@@ -147,190 +137,84 @@ public class PortalService {
     }
 
 
-//    public List<PortalModel> search(String name, String role, String department) {
-//        List<PortalEntity> entity = portalJpaRepository.findByNameAndRoleAndDepartment(name, role, department);
-////        List<PortalModel> result = new ArrayList<>();
-////
-////        for(PortalEntity portalEntity : entity) {
-////            PortalModel porModel = modelMapper.map(portalEntity, PortalModel.class);
-////            result.add(porModel);
-////        }
-////        return result;
-//        return entity.stream()
-//                .map(portalEntity -> modelMapper.map(portalEntity, PortalModel.class))
-//                .collect(Collectors.toList());
-//    }
-
-//    public List<PortalModel> search(String name, String role, String department) {
-//        List<PortalEntity> entityList;
-//
-//        if (name != null && !name.isEmpty()) {
-//            if (role != null && !role.isEmpty()) {
-//                if (department != null && !department.isEmpty()) {
-//                    // ค้นหาตามชื่อ, บทบาท, และแผนก
-//                    entityList = portalJpaRepository.findByEmpNameAndEmpRoleAndDept(name, role, department);
-//                } else {
-//                    // ค้นหาตามชื่อและบทบาท
-//                    entityList = portalJpaRepository.findByEmpNameAndEmpRole(name, role);
-//                }
-//            } else if (department != null && !department.isEmpty()) {
-//                // ค้นหาตามชื่อและแผนก
-//                entityList = portalJpaRepository.findByEmpNameAndDept(name, department);
-//            } else {
-//                // ค้นหาตามชื่อเท่านั้น
-//                entityList = portalJpaRepository.findByEmpName(name);
-//            }
-//        } else if (role != null && !role.isEmpty()) {
-//            if (department != null && !department.isEmpty()) {
-//                // ค้นหาตามบทบาทและแผนก
-//                entityList = portalJpaRepository.findByEmpRoleAndDept(role, department);
-//            } else {
-//                // ค้นหาตามบทบาทเท่านั้น
-//                entityList = portalJpaRepository.findByEmpRole(role);
-//            }
-//        } else if (department != null && !department.isEmpty()) {
-//            // ค้นหาตามแผนก
-//            entityList = portalJpaRepository.findByDept(department);
-//        } else {
-//            // ถ้าไม่ระบุเงื่อนไขใดๆ ให้คืนรายการทั้งหมด
-//            entityList = portalJpaRepository.findAll();
-//        }
-//
-//        return entityList.stream()
-//                .map(portalEntity -> modelMapper.map(portalEntity, PortalModel.class))
-//                .collect(Collectors.toList());
-//    }
-
     public List<PortalModel> search(String name, String role, String department, Timestamp startDate, Timestamp endDate, String topic) {
         List<PortalEntity> entityList;
 
-        if (name != null && !name.isEmpty()) {
-            if (role != null && !role.isEmpty()) {
-                if (department != null && !department.isEmpty()) {
-                    if (startDate != null && endDate != null && topic != null && !topic.isEmpty()) {
-                        // ค้นหาตามชื่อ, บทบาท, แผนก, startDate, endDate, และ topic
-                        entityList = portalJpaRepository.findByEmpNameAndEmpRoleAndDeptAndStartDateAndEndDateAndTopic(name, role, department, startDate, endDate, topic);
-                    } else if (startDate != null && endDate != null) {
-                        // ค้นหาตามชื่อ, บทบาท, แผนก, startDate, และ endDate
-                        entityList = portalJpaRepository.findByEmpNameAndEmpRoleAndDeptAndStartDateAndEndDate(name, role, department, startDate, endDate);
-                    } else if (topic != null && !topic.isEmpty()) {
-                        // ค้นหาตามชื่อ, บทบาท, แผนก, และ topic
-                        entityList = portalJpaRepository.findByEmpNameAndEmpRoleAndDeptAndTopic(name, role, department, topic);
-                    } else {
-                        // ค้นหาตามชื่อ, บทบาท, และแผนก
-                        entityList = portalJpaRepository.findByEmpNameAndEmpRoleAndDept(name, role, department);
-                    }
-                } else {
-                    if (startDate != null && endDate != null && topic != null && !topic.isEmpty()) {
-                        // ค้นหาตามชื่อ, บทบาท, startDate, endDate, และ topic
-                        entityList = portalJpaRepository.findByEmpNameAndEmpRoleAndStartDateAndEndDateAndTopic(name, role, startDate, endDate, topic);
-                    } else if (startDate != null && endDate != null) {
-                        // ค้นหาตามชื่อ, บทบาท, startDate, และ endDate
-                        entityList = portalJpaRepository.findByEmpNameAndEmpRoleAndStartDateAndEndDate(name, role, startDate, endDate);
-                    } else if (topic != null && !topic.isEmpty()) {
-                        // ค้นหาตามชื่อ, บทบาท, และ topic
-                        entityList = portalJpaRepository.findByEmpNameAndEmpRoleAndTopic(name, role, topic);
-                    } else {
-                        // ค้นหาตามชื่อและบทบาท
-                        entityList = portalJpaRepository.findByEmpNameAndEmpRole(name, role);
-                    }
-                }
-            } else if (department != null && !department.isEmpty()) {
-                if (startDate != null && endDate != null && topic != null && !topic.isEmpty()) {
-                    // ค้นหาตามชื่อ, แผนก, startDate, endDate, และ topic
-                    entityList = portalJpaRepository.findByEmpNameAndDeptAndStartDateAndEndDateAndTopic(name, department, startDate, endDate, topic);
-                } else if (startDate != null && endDate != null) {
-                    // ค้นหาตามชื่อ, แผนก, startDate, และ endDate
-                    entityList = portalJpaRepository.findByEmpNameAndDeptAndStartDateAndEndDate(name, department, startDate, endDate);
-                } else if (topic != null && !topic.isEmpty()) {
-                    // ค้นหาตามชื่อ, แผนก, และ topic
-                    entityList = portalJpaRepository.findByEmpNameAndDeptAndTopic(name, department, topic);
-                } else {
-                    // ค้นหาตามชื่อและแผนก
-                    entityList = portalJpaRepository.findByEmpNameAndDept(name, department);
-                }
-            } else {
-                if (startDate != null && endDate != null && topic != null && !topic.isEmpty()) {
-                    // ค้นหาตามชื่อ, startDate, endDate, และ topic
-                    entityList = portalJpaRepository.findByEmpNameAndStartDateAndEndDateAndTopic(name, startDate, endDate, topic);
-                } else if (startDate != null && endDate != null) {
-                    // ค้นหาตามชื่อ, startDate, และ endDate
-                    entityList = portalJpaRepository.findByEmpNameAndStartDateAndEndDate(name, startDate, endDate);
-                } else if (topic != null && !topic.isEmpty()) {
-                    // ค้นหาตามชื่อและ topic
-                    entityList = portalJpaRepository.findByEmpNameAndTopic(name, topic);
-                } else {
-                    // ค้นหาตามชื่อเท่านั้น
-                    entityList = portalJpaRepository.findByEmpName(name);
-                }
-            }
-        } else if (role != null && !role.isEmpty()) {
-            if (department != null && !department.isEmpty()) {
-                if (startDate != null && endDate != null && topic != null && !topic.isEmpty()) {
-                    // ค้นหาตามบทบาท, แผนก, startDate, endDate, และ topic
-                    entityList = portalJpaRepository.findByEmpRoleAndDeptAndStartDateAndEndDateAndTopic(role, department, startDate, endDate, topic);
-                } else if (startDate != null && endDate != null) {
-                    // ค้นหาตามบทบาท, แผนก, startDate, และ endDate
-                    entityList = portalJpaRepository.findByEmpRoleAndDeptAndStartDateAndEndDate(role, department, startDate, endDate);
-                } else if (topic != null && !topic.isEmpty()) {
-                    // ค้นหาตามบทบาท, แผนก, และ topic
-                    entityList = portalJpaRepository.findByEmpRoleAndDeptAndTopic(role, department, topic);
-                } else {
-                    // ค้นหาตามบทบาทและแผนก
-                    entityList = portalJpaRepository.findByEmpRoleAndDept(role, department);
-                }
-            } else {
-                if (startDate != null && endDate != null && topic != null && !topic.isEmpty()) {
-                    // ค้นหาตามบทบาท, startDate, endDate, และ topic
-                    entityList = portalJpaRepository.findByEmpRoleAndStartDateAndEndDateAndTopic(role, startDate, endDate, topic);
-                } else if (startDate != null && endDate != null) {
-                    // ค้นหาตามบทบาท, startDate, และ endDate
-                    entityList = portalJpaRepository.findByEmpRoleAndStartDateAndEndDate(role, startDate, endDate);
-                } else if (topic != null && !topic.isEmpty()) {
-                    // ค้นหาตามบทบาทและ topic
-                    entityList = portalJpaRepository.findByEmpRoleAndTopic(role, topic);
-                } else {
-                    // ค้นหาตามบทบาทเท่านั้น
-                    entityList = portalJpaRepository.findByEmpRole(role);
-                }
-            }
-        } else if (department != null && !department.isEmpty()) {
-            if (startDate != null && endDate != null && topic != null && !topic.isEmpty()) {
-                // ค้นหาตามแผนก, startDate, endDate, และ topic
-                entityList = portalJpaRepository.findByDeptAndStartDateAndEndDateAndTopic(department, startDate, endDate, topic);
-            } else if (startDate != null && endDate != null) {
-                // ค้นหาตามแผนก, startDate, และ endDate
-                entityList = portalJpaRepository.findByDeptAndStartDateAndEndDate(department, startDate, endDate);
-            } else if (topic != null && !topic.isEmpty()) {
-                // ค้นหาตามแผนกและ topic
-                entityList = portalJpaRepository.findByDeptAndTopic(department, topic);
-            } else {
-                // ค้นหาตามแผนกเท่านั้น
-                entityList = portalJpaRepository.findByDept(department);
-            }
-        } else {
-            if (startDate != null && endDate != null && topic != null && !topic.isEmpty()) {
-                // ค้นหาตาม startDate, endDate, และ topic
-                entityList = portalJpaRepository.findByStartDateAndEndDateAndTopic(startDate, endDate, topic);
-            } else if (startDate != null && endDate != null) {
-                // ค้นหาตาม startDate และ endDate
-                entityList = portalJpaRepository.findByStartDateAndEndDate(startDate, endDate);
-            } else if (topic != null && !topic.isEmpty()) {
-                // ค้นหาตาม topic
-                entityList = portalJpaRepository.findByTopic(topic);
-            } else {
-                // ถ้าไม่ระบุเงื่อนไขใดๆ ให้คืนรายการทั้งหมด
-                entityList = portalJpaRepository.findAll();
-            }
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<PortalEntity> query = builder.createQuery(PortalEntity.class);
+        Root<PortalEntity> root = query.from(PortalEntity.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (name != null) {
+            //predicates.add(builder.equal(root.get("empName"), name));
+            predicates.add(builder.like(root.get("empName"),  name + "%"));
         }
+
+        if (role != null) {
+            //predicates.add(builder.equal(root.get("empRole"), role));
+            predicates.add(builder.like(root.get("empRole"), role + "%"));
+
+        }
+
+        if (department != null) {
+            //predicates.add(builder.equal(root.get("dept"), department));
+            predicates.add(builder.like(root.get("dept"), department + "%"));
+        }
+
+        if (startDate != null) {
+            //predicates.add(builder.equal(root.get("startDate"), startDate));
+            predicates.add(builder.like(root.get("startDate"), startDate + "%"));
+        }
+
+        if (endDate != null) {
+            //predicates.add(builder.equal(root.get("endDate"), endDate));
+            predicates.add(builder.like(root.get("endDate"), endDate + "%"));
+        }
+
+//        if (startDate != null && endDate != null) {
+//            predicates.add(builder.between(root.get("startDate"), startDate, endDate));
+//        } else if (startDate != null) {
+//            predicates.add(builder.greaterThanOrEqualTo(root.get("startDate"), startDate));
+//        } else if (endDate != null) {
+//            predicates.add(builder.lessThanOrEqualTo(root.get("endDate"), endDate));
+//        }
+
+        ///////////////////////////////
+//        if (startDate != null && endDate != null) {
+//            predicates.add(builder.between(
+//                    root.get("startDate").as(Instant.class).as(LocalDate.class),
+//                    startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
+//                    endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+//            ));
+//        } else if (startDate != null) {
+//            predicates.add(builder.equal(
+//                    root.get("startDate").as(Instant.class).as(LocalDate.class),
+//                    startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+//            ));
+//        } else if (endDate != null) {
+//            predicates.add(builder.equal(
+//                    root.get("endDate").as(Instant.class).as(LocalDate.class),
+//                    endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+//            ));
+//        }
+
+        ///////////////////////////////
+
+
+        if (topic != null) {
+            //predicates.add(builder.equal(root.get("topic"), topic));
+            predicates.add(builder.like(root.get("topic"), topic + "%"));
+        }
+
+        query.where(predicates.toArray(new Predicate[0]));
+
+        entityList = entityManager.createQuery(query).getResultList();
 
         return entityList.stream()
                 .map(portalEntity -> modelMapper.map(portalEntity, PortalModel.class))
                 .collect(Collectors.toList());
     }
-
-
-
 
 
 }
