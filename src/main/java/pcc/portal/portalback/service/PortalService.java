@@ -71,11 +71,14 @@ public class PortalService {
     public String saveData(PortalModel portalModel) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Timestamp startDate = new Timestamp(sdf.parse(portalModel.getStartDate()).getTime());
+        System.out.println(startDate);
         Timestamp endDate = new Timestamp(sdf.parse(portalModel.getEndDate()).getTime());
-
+        System.out.println(endDate);
         int dateDifference = calculateDateDifference(startDate, endDate);
 
         PortalEntity portalEntity = modelMapper.map(portalModel, PortalEntity.class);
+//        portalEntity.setStartDate(startDate);
+//        portalEntity.setEndDate(endDate);
         portalEntity.setDay(dateDifference);
         portalJpaRepository.save(portalEntity);
         return "SUCCESS";
@@ -162,22 +165,22 @@ public class PortalService {
         }
 
         //ห้าม null ทั้ง2ตัว
-//        if (startDate != null && endDate != null) {
-//            predicates.add(builder.lessThanOrEqualTo(root.get("startDate"), startDate));
-//            predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
-//        }
+        if (startDate != null && endDate != null) {
+            predicates.add(builder.lessThanOrEqualTo(root.get("startDate"), startDate));
+            predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
+        }
 
         //null ได้
-        if (startDate != null || endDate != null) {
-            Predicate datePredicate = builder.conjunction();
-            if (startDate != null) {
-                datePredicate = builder.and(datePredicate, builder.lessThanOrEqualTo(root.get("startDate"), startDate));
-            }
-            if (endDate != null) {
-                datePredicate = builder.and(datePredicate, builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
-            }
-            predicates.add(datePredicate);
-        }
+//        if (startDate != null || endDate != null) {
+//            Predicate datePredicate = builder.conjunction();
+//            if (startDate != null) {
+//                datePredicate = builder.and(datePredicate, builder.lessThanOrEqualTo(root.get("startDate"), startDate));
+//            }
+//            if (endDate != null) {
+//                datePredicate = builder.and(datePredicate, builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
+//            }
+//            predicates.add(datePredicate);
+//        }
 
 
         if (topic != null) {
