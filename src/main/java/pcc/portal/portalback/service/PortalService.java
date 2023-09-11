@@ -11,15 +11,13 @@ import pcc.portal.portalback.repository.PortalJpaRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -162,44 +160,16 @@ public class PortalService {
             predicates.add(builder.like(root.get("dept"), department + "%"));
         }
 
-        if (startDate != null) {
-            //predicates.add(builder.equal(root.get("startDate"), startDate));
-            predicates.add(builder.like(root.get("startDate"), startDate + "%"));
-        }
-
-        if (endDate != null) {
-            //predicates.add(builder.equal(root.get("endDate"), endDate));
-            predicates.add(builder.like(root.get("endDate"), endDate + "%"));
-        }
-
 //        if (startDate != null && endDate != null) {
+//            System.out.println(startDate);
+//            System.out.println(endDate);
 //            predicates.add(builder.between(root.get("startDate"), startDate, endDate));
-//        } else if (startDate != null) {
-//            predicates.add(builder.greaterThanOrEqualTo(root.get("startDate"), startDate));
-//        } else if (endDate != null) {
-//            predicates.add(builder.lessThanOrEqualTo(root.get("endDate"), endDate));
 //        }
 
-        ///////////////////////////////
-//        if (startDate != null && endDate != null) {
-//            predicates.add(builder.between(
-//                    root.get("startDate").as(Instant.class).as(LocalDate.class),
-//                    startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-//                    endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-//            ));
-//        } else if (startDate != null) {
-//            predicates.add(builder.equal(
-//                    root.get("startDate").as(Instant.class).as(LocalDate.class),
-//                    startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-//            ));
-//        } else if (endDate != null) {
-//            predicates.add(builder.equal(
-//                    root.get("endDate").as(Instant.class).as(LocalDate.class),
-//                    endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-//            ));
-//        }
-
-        ///////////////////////////////
+        if (startDate != null && endDate != null) {
+            predicates.add(builder.lessThanOrEqualTo(root.get("startDate"), startDate));
+            predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
+        }
 
 
         if (topic != null) {
@@ -215,6 +185,9 @@ public class PortalService {
                 .map(portalEntity -> modelMapper.map(portalEntity, PortalModel.class))
                 .collect(Collectors.toList());
     }
+
+
+
 
 
 }
