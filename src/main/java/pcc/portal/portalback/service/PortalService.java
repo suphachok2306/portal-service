@@ -146,35 +146,43 @@ public class PortalService {
 
         if (name != null) {
             //predicates.add(builder.equal(root.get("empName"), name));
-            predicates.add(builder.like(root.get("empName"),  name + "%"));
+            //predicates.add(builder.like(root.get("empName"),  name + "%"));
+            predicates.add(builder.like(builder.lower(root.get("empName")), name.toLowerCase() + "%"));
         }
 
         if (role != null) {
             //predicates.add(builder.equal(root.get("empRole"), role));
-            predicates.add(builder.like(root.get("empRole"), role + "%"));
+            predicates.add(builder.like(builder.lower(root.get("empRole")), role.toLowerCase() + "%"));
 
         }
 
         if (department != null) {
             //predicates.add(builder.equal(root.get("dept"), department));
-            predicates.add(builder.like(root.get("dept"), department + "%"));
+            predicates.add(builder.like(builder.lower(root.get("dept")), department.toLowerCase() + "%"));
         }
 
+        //ห้าม null ทั้ง2ตัว
 //        if (startDate != null && endDate != null) {
-//            System.out.println(startDate);
-//            System.out.println(endDate);
-//            predicates.add(builder.between(root.get("startDate"), startDate, endDate));
+//            predicates.add(builder.lessThanOrEqualTo(root.get("startDate"), startDate));
+//            predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
 //        }
 
-        if (startDate != null && endDate != null) {
-            predicates.add(builder.lessThanOrEqualTo(root.get("startDate"), startDate));
-            predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
+        //null ได้
+        if (startDate != null || endDate != null) {
+            Predicate datePredicate = builder.conjunction();
+            if (startDate != null) {
+                datePredicate = builder.and(datePredicate, builder.lessThanOrEqualTo(root.get("startDate"), startDate));
+            }
+            if (endDate != null) {
+                datePredicate = builder.and(datePredicate, builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
+            }
+            predicates.add(datePredicate);
         }
 
 
         if (topic != null) {
             //predicates.add(builder.equal(root.get("topic"), topic));
-            predicates.add(builder.like(root.get("topic"), topic + "%"));
+            predicates.add(builder.like(builder.lower(root.get("topic")), topic.toLowerCase() + "%"));
         }
 
         query.where(predicates.toArray(new Predicate[0]));
