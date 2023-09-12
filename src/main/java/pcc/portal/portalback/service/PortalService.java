@@ -71,9 +71,7 @@ public class PortalService {
     public String saveData(PortalModel portalModel) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Timestamp startDate = new Timestamp(sdf.parse(portalModel.getStartDate()).getTime());
-        System.out.println(startDate);
         Timestamp endDate = new Timestamp(sdf.parse(portalModel.getEndDate()).getTime());
-        System.out.println(endDate);
         int dateDifference = calculateDateDifference(startDate, endDate);
 
         PortalEntity portalEntity = modelMapper.map(portalModel, PortalEntity.class);
@@ -84,7 +82,7 @@ public class PortalService {
         return "SUCCESS";
     }
 
-
+    //ใช้ saveData แทนได้เหมือนกัน
     public String editData(PortalModel portalModel) throws ParseException {
         Optional<PortalEntity> optionalPortalEntity = portalJpaRepository.findById(portalModel.getOf1_id());
 
@@ -98,8 +96,8 @@ public class PortalService {
             int dateDifference = calculateDateDifference(startDate, endDate);
 
             portalEntity = modelMapper.map(portalModel, PortalEntity.class);
-            portalEntity.setStartDate(startDate);
-            portalEntity.setEndDate(endDate);
+//            portalEntity.setStartDate(startDate);
+//            portalEntity.setEndDate(endDate);
             portalEntity.setDay(dateDifference);
             portalJpaRepository.save(portalEntity);
 
@@ -150,18 +148,18 @@ public class PortalService {
         if (name != null) {
             //predicates.add(builder.equal(root.get("empName"), name));
             //predicates.add(builder.like(root.get("empName"),  name + "%"));
-            predicates.add(builder.like(builder.lower(root.get("empName")), name.toLowerCase() + "%"));
+            predicates.add(builder.like(builder.lower(root.get("empName")), "%" + name.toLowerCase() + "%"));
         }
 
         if (role != null) {
             //predicates.add(builder.equal(root.get("empRole"), role));
-            predicates.add(builder.like(builder.lower(root.get("empRole")), role.toLowerCase() + "%"));
+            predicates.add(builder.like(builder.lower(root.get("empRole")), "%" + role.toLowerCase() + "%"));
 
         }
 
         if (department != null) {
             //predicates.add(builder.equal(root.get("dept"), department));
-            predicates.add(builder.like(builder.lower(root.get("dept")), department.toLowerCase() + "%"));
+            predicates.add(builder.like(builder.lower(root.get("dept")), "%" + department.toLowerCase() + "%"));
         }
 
         //ห้าม null ทั้ง2ตัว
@@ -182,10 +180,8 @@ public class PortalService {
 //            predicates.add(datePredicate);
 //        }
 
-
         if (topic != null) {
-            //predicates.add(builder.equal(root.get("topic"), topic));
-            predicates.add(builder.like(builder.lower(root.get("topic")), topic.toLowerCase() + "%"));
+            predicates.add(builder.like(builder.lower(root.get("topic")), "%" + topic.toLowerCase() + "%"));
         }
 
         query.where(predicates.toArray(new Predicate[0]));
