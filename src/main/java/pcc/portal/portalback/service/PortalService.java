@@ -174,7 +174,7 @@ public class PortalService {
             predicates.add(builder.like(builder.lower(root.get("topic")), "%" + topic.toLowerCase() + "%"));
         }
 
-        else {
+        if (name == null && role == null && department == null && startDate == null && endDate == null && topic == null){
             return "ERROR: Null";
         }
 
