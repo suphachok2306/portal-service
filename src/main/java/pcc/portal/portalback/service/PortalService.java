@@ -158,8 +158,16 @@ public class PortalService {
         }
 
         //search ตรงตัว
-        if (startDate != null && endDate != null) {
+//        if (startDate != null && endDate != null) {
+//            predicates.add(builder.equal(root.get("startDate"), startDate));
+//            predicates.add(builder.equal(root.get("endDate"), endDate));
+//        }
+
+        if (startDate != null) {
             predicates.add(builder.equal(root.get("startDate"), startDate));
+        }
+
+        if (endDate != null) {
             predicates.add(builder.equal(root.get("endDate"), endDate));
         }
 
