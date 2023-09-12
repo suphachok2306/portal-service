@@ -62,7 +62,8 @@ public class PortalController {
 //    }
 
     @GetMapping("/ftr-oj1/search")
-    public List<PortalModel> search(
+//    public List<PortalModel> search(
+    public Object search(
             @RequestParam(required = false) String empName,
             @RequestParam(required = false) String empRole,
             @RequestParam(required = false) String department,

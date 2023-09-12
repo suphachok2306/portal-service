@@ -38,7 +38,8 @@ public class ReportPortalController {
     }
 
     @GetMapping("/ftr-sv1/search")
-    public List<ReportPortalModel> search(@RequestParam String year, String department) {
+//    public List<ReportPortalModel> search(@RequestParam String year, String department) {
+    public Object search(@RequestParam String year, String department) {
         return reportPortalService.search(year,department);
     }
 

@@ -1,6 +1,5 @@
 package pcc.portal.portalback.service;
 
-import org.hibernate.engine.spi.SessionImplementor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +14,6 @@ import javax.persistence.criteria.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -136,7 +131,7 @@ public class PortalService {
     }
 
 
-    public List<PortalModel> search(String name, String role, String department, Timestamp startDate, Timestamp endDate, String topic) {
+    public Object search(String name, String role, String department, Timestamp startDate, Timestamp endDate, String topic) {
         List<PortalEntity> entityList;
 
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
@@ -162,26 +157,25 @@ public class PortalService {
             predicates.add(builder.like(builder.lower(root.get("dept")), "%" + department.toLowerCase() + "%"));
         }
 
-        //ห้าม null ทั้ง2ตัว
+        //search ตรงตัว
         if (startDate != null && endDate != null) {
-            predicates.add(builder.lessThanOrEqualTo(root.get("startDate"), startDate));
-            predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
+            predicates.add(builder.equal(root.get("startDate"), startDate));
+            predicates.add(builder.equal(root.get("endDate"), endDate));
         }
 
-        //null ได้
-//        if (startDate != null || endDate != null) {
-//            Predicate datePredicate = builder.conjunction();
-//            if (startDate != null) {
-//                datePredicate = builder.and(datePredicate, builder.lessThanOrEqualTo(root.get("startDate"), startDate));
-//            }
-//            if (endDate != null) {
-//                datePredicate = builder.and(datePredicate, builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
-//            }
-//            predicates.add(datePredicate);
+        //ห้าม null ทั้ง2ตัว
+        //search ในช่วงเวลา
+//        if (startDate != null && endDate != null) {
+//            predicates.add(builder.lessThanOrEqualTo(root.get("startDate"), startDate));
+//            predicates.add(builder.greaterThanOrEqualTo(root.get("endDate"), endDate));
 //        }
 
         if (topic != null) {
             predicates.add(builder.like(builder.lower(root.get("topic")), "%" + topic.toLowerCase() + "%"));
+        }
+
+        else {
+            return "ERROR: Null";
         }
 
         query.where(predicates.toArray(new Predicate[0]));

@@ -67,13 +67,15 @@ public class ReportPortalService {
         return reportPortalJpaRepository.findAll();
     }
 
-    public List<ReportPortalModel> search(String year, String department) {
+//    public List<ReportPortalModel> search(String year, String department) {
+    public Object search(String year, String department) {
         List<ReportPortalEntity> entityList;
 
         if (year != null && !year.isEmpty() && department != null && !department.isEmpty()) {
             entityList = reportPortalJpaRepository.findByYearAndDepartment(year, department);
         } else {
-            entityList = reportPortalJpaRepository.findAll();
+            //entityList = reportPortalJpaRepository.findAll();
+            return "ERROR: Null";
         }
         return entityList.stream()
                 .map(reportPortalEntity -> modelMapper.map(reportPortalEntity, ReportPortalModel.class))
