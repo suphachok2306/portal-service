@@ -2,6 +2,7 @@ package pcc.portal.portalback.service;
 
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import pcc.portal.portalback.model.PortalModel;
 import pcc.portal.portalback.model.ReportPortalModel;
 import pcc.portal.portalback.repository.ReportPortalJpaRepository;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -111,4 +114,42 @@ public class ReportPortalService {
             return null;
         }
     }
+
+//    public String printByJson(byte[] jsonBytes) throws IOException {
+//        String json = null;
+//        json = new String(jsonBytes, "UTF-8");
+//        List<ReportPortalModel> result = getReportPortalModel();
+//
+//        try {
+//            //put parameters
+//            HashMap<String, Object> params = new HashMap<>();
+////            params.put("name", "ศุภโชค");
+////            params.put("surename", "เฮงโชตน์ปภา");
+////            params.put("nickname", "ป้อ");
+////            params.put("university", "เกษตรศาสตร์ บางเขน");
+//
+//            // convert JSON file to Byte Array InputStream
+//            ByteArrayInputStream jsonDataStream = new ByteArrayInputStream(json.getBytes());
+//            //JsonDataSource
+//            JsonDataSource dataSource = new JsonDataSource(jsonDataStream);
+//
+//            //path jrxml file
+//            InputStream reportInput = ReportPortalService.class.getClassLoader().getResourceAsStream("report/manowVrt.jrxml");
+//            // compileReport JRXML file to JASPER file
+//            JasperReport jasperReport = JasperCompileManager.compileReport(reportInput);
+//            //fillReport
+//            JasperPrint jasperPrint2 = JasperFillManager.fillReport(jasperReport, params,dataSource);
+//
+//            //exportReport to PDF
+//            byte[] bytes = JasperExportManager.exportReportToPdf(jasperPrint2);
+//            //byte to Base64
+//            return Base64.encodeBase64String(bytes);
+//
+//        } catch (Exception e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//
+//        return null;
+//    }
 }

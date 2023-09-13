@@ -40,11 +40,13 @@ public class PortalService {
         this.portalJpaRepository = portalJpaRepository;
         this.modelMapper = modelMapper;
         modelMapper.addConverter(context -> {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             if (context.getSource() instanceof String) {
                 try {
-                    Date date = dateFormat.parse((String) context.getSource());
-                    return new Timestamp(date.getTime());
+//                    Date date = dateFormat.parse((String) context.getSource());
+//                    return new Timestamp(date.getTime());
+                    return new Timestamp(dateFormat.parse((String) context.getSource()).getTime());
                 } catch (ParseException e) {
                     // ในกรณีที่เกิดข้อผิดพลาดในการแปลง คุณสามารถจัดการข้อผิดพลาดได้ตามความเหมาะสม
                     e.printStackTrace();
@@ -64,7 +66,8 @@ public class PortalService {
     }
 
     public String saveData(PortalModel portalModel) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         Timestamp startDate = new Timestamp(sdf.parse(portalModel.getStartDate()).getTime());
         Timestamp endDate = new Timestamp(sdf.parse(portalModel.getEndDate()).getTime());
         int dateDifference = calculateDateDifference(startDate, endDate);
@@ -84,7 +87,8 @@ public class PortalService {
         if (optionalPortalEntity.isPresent()) {
             PortalEntity portalEntity = optionalPortalEntity.get();
 
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             Timestamp startDate = new Timestamp(sdf.parse(portalModel.getStartDate()).getTime());
             Timestamp endDate = new Timestamp(sdf.parse(portalModel.getEndDate()).getTime());
 
