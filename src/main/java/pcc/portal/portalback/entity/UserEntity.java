@@ -1,5 +1,7 @@
 package pcc.portal.portalback.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,14 +11,16 @@ public class UserEntity {
     private String username;
     private String password;
     private String email;
+    private String role;
 
     public UserEntity(){super();}
 
-    public UserEntity(long id, String username, String password, String email) {
+    public UserEntity(long id, String username, String password, String email, String role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role = role;
     }
 
     @Id
@@ -29,6 +33,7 @@ public class UserEntity {
     public String getUsername() {return username;}
     public void setUsername(String username) {this.username = username;}
 
+    //@JsonIgnore
     @Column(name = "password", length = 20)
     public String getPassword() {return password;}
     public void setPassword(String password) {this.password = password;}
@@ -36,4 +41,8 @@ public class UserEntity {
     @Column(name = "email", length = 20)
     public String getEmail() {return email;}
     public void setEmail(String email) {this.email = email;}
+
+    @Column(name = "role", length = 20)
+    public String getRole() {return role;}
+    public void setRole(String role) {this.role = role;}
 }

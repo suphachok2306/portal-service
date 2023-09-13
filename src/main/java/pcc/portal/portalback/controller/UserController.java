@@ -1,11 +1,16 @@
 package pcc.portal.portalback.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pcc.portal.portalback.entity.UserEntity;
+import pcc.portal.portalback.model.PortalModel;
 import pcc.portal.portalback.model.UserModel;
 import pcc.portal.portalback.service.UserService;
+
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,15 +24,6 @@ public class UserController {
     }
 
 
-//    @PostMapping("/login")
-//    public UserModel login(@RequestBody UserModel userModel) {
-//        UserModel user = userService.getEmail(userModel.getEmail());
-//        if (user != null && user.getPassword().equals(userModel.getPassword())) {
-//            return user;
-//        }
-//        return null;
-//    }
-
     @PostMapping("/login")
     public ResponseEntity<Object> login(
             @RequestParam("email") String email,
@@ -40,8 +36,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/create")
-    public UserModel createUser(@RequestBody UserModel userModel) {
+    @PostMapping("/createUser")
+    public String createUser(@RequestBody UserModel userModel) {
         return userService.createUser(userModel);
     }
 

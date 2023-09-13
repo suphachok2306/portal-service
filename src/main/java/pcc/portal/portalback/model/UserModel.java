@@ -5,6 +5,7 @@ public class UserModel {
     private String username;
     private String password;
     private String email;
+    private String role;
 
     public long getId() {
         return id;
@@ -36,5 +37,13 @@ public class UserModel {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

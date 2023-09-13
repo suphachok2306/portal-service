@@ -1,5 +1,6 @@
 package pcc.portal.portalback.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pcc.portal.portalback.entity.UserEntity;
@@ -10,10 +11,12 @@ import pcc.portal.portalback.repository.UserRepository;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, ModelMapper modelMapper) {
         this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
     }
 
     public Object checkEmailPassword(String email, String password) {
@@ -33,23 +36,10 @@ public class UserService {
         }
     }
 
-    //จะมาแก้อีกที แต่ใช้ได้แล้ว
-    public UserModel createUser(UserModel userModel) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(userModel.getUsername());
-        userEntity.setPassword(userModel.getPassword());
-        userEntity.setEmail(userModel.getEmail());
-        userEntity = userRepository.save(userEntity);
-        return convertToModel(userEntity);
-    }
-
-    private UserModel convertToModel(UserEntity userEntity) {
-        UserModel userModel = new UserModel();
-        userModel.setId(userEntity.getId());
-        userModel.setUsername(userEntity.getUsername());
-        userModel.setPassword(userEntity.getPassword());
-        userModel.setEmail(userEntity.getEmail());
-        return userModel;
+    public String createUser(UserModel userModel){
+        UserEntity userEntity = modelMapper.map(userModel, UserEntity.class);
+        userRepository.save(userEntity);
+        return "SUCCESS";
     }
 }
 
