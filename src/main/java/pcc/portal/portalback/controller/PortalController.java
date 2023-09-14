@@ -81,6 +81,7 @@ public class PortalController {
             try {
                 Date parsedStartDate = dateFormat.parse(startDate);
                 startTimestamp = new Timestamp(parsedStartDate.getTime());
+                System.out.println(startTimestamp);
             } catch (ParseException e) {
                 // ในกรณีที่รูปแบบวันที่ไม่ถูกต้อง
                 e.printStackTrace();

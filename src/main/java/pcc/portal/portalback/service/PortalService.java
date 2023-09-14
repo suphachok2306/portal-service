@@ -22,6 +22,7 @@ public class PortalService {
     private final PortalJpaRepository portalJpaRepository;
     private final ModelMapper modelMapper;
 
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -41,7 +42,7 @@ public class PortalService {
         this.modelMapper = modelMapper;
         modelMapper.addConverter(context -> {
             //SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             if (context.getSource() instanceof String) {
                 try {
 //                    Date date = dateFormat.parse((String) context.getSource());
@@ -67,12 +68,13 @@ public class PortalService {
 
     public String saveData(PortalModel portalModel) throws ParseException {
         //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Timestamp startDate = new Timestamp(sdf.parse(portalModel.getStartDate()).getTime());
         Timestamp endDate = new Timestamp(sdf.parse(portalModel.getEndDate()).getTime());
         int dateDifference = calculateDateDifference(startDate, endDate);
 
         PortalEntity portalEntity = modelMapper.map(portalModel, PortalEntity.class);
+        portalEntity.setDate(new Timestamp(System.currentTimeMillis()));
 //        portalEntity.setStartDate(startDate);
 //        portalEntity.setEndDate(endDate);
         portalEntity.setDay(dateDifference);
@@ -88,9 +90,12 @@ public class PortalService {
             PortalEntity portalEntity = optionalPortalEntity.get();
 
             //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Timestamp startDate = new Timestamp(sdf.parse(portalModel.getStartDate()).getTime());
             Timestamp endDate = new Timestamp(sdf.parse(portalModel.getEndDate()).getTime());
+
+            SimpleDateFormat forDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            Timestamp saveDate = new Timestamp(forDate.parse(portalModel.getDate()).getTime());
 
             int dateDifference = calculateDateDifference(startDate, endDate);
 
@@ -98,6 +103,8 @@ public class PortalService {
 //            portalEntity.setStartDate(startDate);
 //            portalEntity.setEndDate(endDate);
             portalEntity.setDay(dateDifference);
+            portalEntity.setDate(saveDate);
+
             portalJpaRepository.save(portalEntity);
 
             return "SUCCESS";

@@ -1,5 +1,7 @@
 package pcc.portal.portalback.model;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class UserModel {
     private long id;
     private String username;
