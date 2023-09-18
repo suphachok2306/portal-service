@@ -56,4 +56,7 @@ public interface UserService {
     void addRoleToUser(String username, String roleName);
     User getUser(String username);
     List<User>getUser();
+    boolean hasRole(String username, String roleName);
+    boolean roleExisted(String name);
+    boolean userExisted(String username);
 }

@@ -10,16 +10,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Entity
+@Builder
 @Table(name = "USERS")
 @Data @NoArgsConstructor @AllArgsConstructor
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
+    private String firstname;
+    private String lastname;
     private String username;
     private String email;
     private String password;
+    private String telephone;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
 
 }
+
+

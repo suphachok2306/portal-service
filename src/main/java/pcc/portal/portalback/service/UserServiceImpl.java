@@ -28,13 +28,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
         if (user == null) {
             log.error("User not found in the database");
             throw new UsernameNotFoundException("User not found in the database");
         } else {
-            log.info("User found in the database: {}", username);
+            log.info("User found in the database: {}", email);
         }
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> {
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User saveUser(User user) {
-        log.info("Saving new user {} to the database", user.getName());
+        //log.info("Saving new user {} to the database", user.getName());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -56,13 +56,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return roleRepository.save(role);
     }
 
-
     @Override
     public void addRoleToUser(String username, String roleName) {
         log.info("Adding role {} to user {}",roleName, username);
         User user = userRepository.findByUsername(username);
         Role role = roleRepository.findByName(roleName);
         user.getRoles().add(role);
+
     }
 
     @Override
@@ -77,6 +77,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findAll();
     }
 
+    @Override
+    public boolean hasRole(String username, String roleName) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            return user.getRoles().stream()
+                    .anyMatch(role -> role.getName().equals(roleName));
+        }
+        return false;
+    }
 
+    @Override
+    public boolean roleExisted(String name) {
+        Role role = roleRepository.findByName(name);
+        return (role != null);
+    }
+
+    @Override
+    public boolean userExisted(String username) {
+        User user = userRepository.findByUsername(username);
+        return (user != null);
+    }
 }
-

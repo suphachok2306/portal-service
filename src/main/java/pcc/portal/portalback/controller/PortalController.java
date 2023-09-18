@@ -1,68 +1,91 @@
 package pcc.portal.portalback.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pcc.portal.portalback.response.ResponseApi;
 import pcc.portal.portalback.model.PortalModel;
 import pcc.portal.portalback.service.PortalService;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.List;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 
 @RestController
+@RequiredArgsConstructor
 public class PortalController {
     private final PortalService portalService;
 
-    @Autowired
-    public PortalController(PortalService portalService){
-        this.portalService = portalService;
+    @PostMapping("/ftr-of1/save")
+//    public Object save(@RequestBody PortalModel portalModel) throws ParseException {
+//        return portalService.saveData(portalModel);
+//    }
+    public ResponseEntity<?> save(@RequestBody PortalModel portalModel) {
+        ResponseApi api = new ResponseApi();
+        try {
+            api.setResponseCode("200");
+            api.setResponseStatus("SUCCESS");
+            api.setResponseMessage("ekhiei");
+            return ResponseEntity.ok(portalService.saveData(portalModel));
+        } catch (Exception e) {
+            api.setResponseCode("400");
+            api.setResponseStatus("ERROR");
+            api.setResponseMessage("ไม่สามารถบันทึกข้อมูลลงฐานข้อมูลได้");
+            return ResponseEntity.status(BAD_REQUEST).body(api);
+        }
     }
-
-    @PostMapping("/ftr-of1/saveData")
-    public String save(@RequestBody PortalModel portalModel) throws ParseException {
-        return portalService.saveData(portalModel);
-    }
-
     @PostMapping("/ftr-oj1/edit")
-    public String edit(@RequestBody PortalModel portalModel) throws ParseException {
-        return portalService.editData(portalModel);
+    public ResponseEntity<?> edit(@RequestBody PortalModel portalModel) {
+        ResponseApi api = new ResponseApi();
+        try {
+            return ResponseEntity.ok(portalService.editData(portalModel));
+        } catch (ParseException e) {
+            api.setResponseCode("400");
+            api.setResponseStatus("ERROR");
+            api.setResponseMessage("ไม่สามารถบันทึกข้อมูลลงฐานข้อมูลได้");
+            return ResponseEntity.status(BAD_REQUEST).body(api);
+        }
+
     }
 
     @DeleteMapping("/ftr-oj1/deleteById")
-    public String delete(@RequestParam Long id){
-        return portalService.deleteData(id);
+    public ResponseEntity<?> delete(@RequestParam Long id){
+        ResponseApi api = new ResponseApi();
+        try {
+            return ResponseEntity.ok(portalService.deleteData(id));
+        } catch (Exception e) {
+            api.setResponseCode("400");
+            api.setResponseStatus("ERROR");
+            api.setResponseMessage("ไม่สามารถทำรายการได้้");
+            return ResponseEntity.status(BAD_REQUEST).body(api);
+        }
     }
 
     @GetMapping("/ftr-oj1/findAll")
-    public Object search() {
+    public Object findAll() {
         return portalService.findAll();
     }
 
     @GetMapping("/ftr-oj1/findById")
-    public PortalModel findById(@RequestParam long of1_id) {
-        return portalService.findById(of1_id);
+    public ResponseEntity<?> findById(@RequestParam long of1_id) {
+        ResponseApi api = new ResponseApi();
+        try {
+            return ResponseEntity.ok(portalService.findById(of1_id));
+        } catch (Exception e) {
+            api.setResponseCode("400");
+            api.setResponseStatus("ERROR");
+            api.setResponseMessage("ไม่สามารถทำรายการได้้");
+            return ResponseEntity.status(BAD_REQUEST).body(api);
+        }
     }
 
-//    @GetMapping("/ftr-oj1/search")
-//    public List<PortalModel> search(
-//            @RequestParam(required = false) String empName,
-//            @RequestParam(required = false) String empRole,
-//            @RequestParam(required = false) String department,
-//            @RequestParam(required = false) Timestamp startDate,
-//            @RequestParam(required = false) Timestamp endDate,
-//            @RequestParam(required = false) String topic
-//
-//    ) {
-//        return portalService.search(empName, empRole, department,startDate,endDate,topic);
-//    }
 
     @GetMapping("/ftr-oj1/search")
-//    public List<PortalModel> search(
     public Object search(
             @RequestParam(required = false) String empName,
             @RequestParam(required = false) String empRole,
@@ -100,10 +123,5 @@ public class PortalController {
 
         return portalService.search(empName, empRole, department, startTimestamp, endTimestamp, topic);
     }
-
-
-
-
-
 
 }
