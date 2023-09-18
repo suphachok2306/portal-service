@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,19 +31,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
 @RequestMapping("/api")
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class UserResource {
     private final UserService userService;
-
-    @Autowired
-    public UserResource(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping("/users")
     public ResponseEntity<List<User>>getUser(){
         return  ResponseEntity.ok().body(userService.getUser());
     }
+
 
     @PostMapping("/users/save")
     public ResponseEntity<User>saveUser(@RequestBody User user){
@@ -59,6 +56,7 @@ public class UserResource {
     @PostMapping("/role/addToUser")
     public ResponseEntity<?>addRoleToUser(@RequestBody RoleToUserForm form){
         userService.addRoleToUser(form.getUsername(), form.getRoleName());
+        System.out.println("UserRes " + form.getUsername());
         return  ResponseEntity.ok().build();
     }
 
