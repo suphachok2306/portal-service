@@ -1,13 +1,6 @@
 package pcc.portal.portalback.model;
 import java.util.Date;
 
-
-//@JsonIgnoreProperties(value = { "code", "dept", "date", "objt", "fee", "company",
-//        "location", "budget", "etcDetails", "empCode", "action", "actionDate", "name",
-//        "role", "sector", "resultOne", "resultTwo", "resultThree", "resultFour", "resultFive",
-//        "resultSix", "resultSeven", "comment"}, ignoreUnknown = true)
-
-
 public class PortalModel {
     private long of1_id;
     private String deptCode;

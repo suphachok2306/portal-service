@@ -101,10 +101,8 @@ public class PortalService {
         //ใช้ตรวจสอบว่า NULL ก่อนส่งมารึป่าว
         if (optionalPortalEntity.isPresent()) {
             portalJpaRepository.deleteById(id);
-            return "SUCCESS";
-        } else {
-            return "ERROR: Data not found";
         }
+        return null;
     }
 
 
