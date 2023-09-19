@@ -15,7 +15,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import pcc.portal.portalback.entity.CustomUserDetails;
 import pcc.portal.portalback.filter.CustomAuthenticationFilter;
 import pcc.portal.portalback.filter.CustomAuthorizationFilter;
 

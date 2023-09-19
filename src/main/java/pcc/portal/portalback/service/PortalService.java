@@ -22,20 +22,9 @@ public class PortalService {
     private final PortalJpaRepository portalJpaRepository;
     private final ModelMapper modelMapper;
 
-
     @PersistenceContext
     private EntityManager entityManager;
 
-//    @Autowired
-//    public PortalService(PortalJpaRepository portalJpaRepository, ModelMapper modelMapper) {
-//        this.portalJpaRepository = portalJpaRepository;
-//        this.modelMapper = modelMapper;
-//        modelMapper.addConverter(context -> {
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//            return dateFormat.format(context.getSource());
-////        }, Date.class, String.class);
-//        }, Timestamp.class, String.class);
-//    }
     @Autowired
     public PortalService(PortalJpaRepository portalJpaRepository, ModelMapper modelMapper) {
         this.portalJpaRepository = portalJpaRepository;
@@ -58,7 +47,6 @@ public class PortalService {
         }, String.class, Timestamp.class);
     }
 
-    //test timestamp
     public int calculateDateDifference(Timestamp startDate, Timestamp endDate) {
         long differenceInMillis = endDate.getTime() - startDate.getTime();
         long differenceInDays = differenceInMillis / (24 * 60 * 60 * 1000);
@@ -66,8 +54,7 @@ public class PortalService {
         return (int) differenceInDays + 1;
     }
 
-    public String saveData(PortalModel portalModel) throws ParseException {
-        //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    public Object saveData(PortalModel portalModel) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Timestamp startDate = new Timestamp(sdf.parse(portalModel.getStartDate()).getTime());
         Timestamp endDate = new Timestamp(sdf.parse(portalModel.getEndDate()).getTime());
@@ -75,15 +62,12 @@ public class PortalService {
 
         PortalEntity portalEntity = modelMapper.map(portalModel, PortalEntity.class);
         portalEntity.setDate(new Timestamp(System.currentTimeMillis()));
-//        portalEntity.setStartDate(startDate);
-//        portalEntity.setEndDate(endDate);
         portalEntity.setDay(dateDifference);
-        portalJpaRepository.save(portalEntity);
-        return "SUCCESS";
+        return portalJpaRepository.save(portalEntity);
     }
 
     //ใช้ saveData แทนได้เหมือนกัน
-    public String editData(PortalModel portalModel) throws ParseException {
+    public Object editData(PortalModel portalModel) throws ParseException {
         Optional<PortalEntity> optionalPortalEntity = portalJpaRepository.findById(portalModel.getOf1_id());
 
         if (optionalPortalEntity.isPresent()) {
@@ -105,9 +89,7 @@ public class PortalService {
             portalEntity.setDay(dateDifference);
             portalEntity.setDate(saveDate);
 
-            portalJpaRepository.save(portalEntity);
-
-            return "SUCCESS";
+            return portalJpaRepository.save(portalEntity);
         } else {
             return "ERROR: Data not found";
         }
